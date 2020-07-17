@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
+import { GiftedChat } from "react-native-gifted-chat";
 
 import io from "socket.io-client";
 
@@ -15,6 +16,19 @@ export default function HomeScreen() {
     socket.current.on("message", (message) => {
       setRecvMessages((prevState) => [...prevState, message]);
     });
+
+    setRecvMessages([
+      {
+        _id: 1,
+        text: "Hello developer",
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: "React Native",
+          avatar: "https://placeimg.com/140/140/any",
+        },
+      },
+    ]);
   }, []);
 
   const sendMessage = () => {
@@ -22,19 +36,16 @@ export default function HomeScreen() {
     setMessageToSend("");
   };
 
-  const textOfRecvMessages = recvMessages.map((msg) => {
-    return <Text key={msg}>{msg}</Text>;
-  });
-
   return (
-    <View style={styles.container}>
-      {textOfRecvMessages}
-      <TextInput
-        value={messageToSend}
-        onChangeText={(text) => setMessageToSend(text)}
-        placeholder="Enter chat message..."
-        onSubmitEditing={sendMessage}
+    <View>
+      <GiftedChat
+        messages={recvMessages}
+        // onSend={(messages) => onSend(messages)}
+        user={{
+          _id: 1,
+        }}
       />
+      {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
     </View>
   );
 }
