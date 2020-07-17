@@ -6,11 +6,15 @@ import io from "socket.io-client";
 
 export default function HomeScreen() {
   const [messageToSend, setMessageToSend] = useState("");
+  const [recvMessages, setRecvMessages] = useState([]);
   const socket = useRef(null);
 
   useEffect(function () {
     socket.current = io("http://192.168.1.20:3001");
     //    socket.emit("message","Hello World")
+    socket.current.on("message", (message) => {
+      setRecvMessages((prevState) => [...prevState, message]);
+    });
   }, []);
 
   const sendMessage = () => {
@@ -18,9 +22,13 @@ export default function HomeScreen() {
     setMessageToSend("");
   };
 
+  const textOfRecvMessages = recvMessages.map((msg) => {
+    return <Text key={msg}>{msg}</Text>;
+  });
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
+      {textOfRecvMessages}
       <TextInput
         value={messageToSend}
         onChangeText={(text) => setMessageToSend(text)}
