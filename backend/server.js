@@ -23,11 +23,6 @@ io.on("connection", (socket) => {
   console.log("a user connected");
   console.log(socket.id);
   users[socket.id] = { userId: uuidv1() };
-  socket.on("join", (username) => {
-    users[socket.id].username = username;
-    users[socket.id].avatar = createUserAvatarUrl();
-    messageHandler.handleMessage(socket, users);
-  });
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");
@@ -53,6 +48,13 @@ io.on("connection", (socket) => {
           type: "users_online",
           data: createUsersOnline(),
         });
+        socket.emit("action", {
+          type: "self_user",
+          data: users[socket.id],
+        });
+        break;
+      case "server/private-message":
+        console.log("Got a private message", action.data);
         break;
     }
   });
