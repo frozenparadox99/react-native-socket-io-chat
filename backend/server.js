@@ -20,6 +20,20 @@ io.on("connection", (socket) => {
     users[socket.id].avatar = createUserAvatarUrl();
     messageHandler.handleMessage(socket, users);
   });
+
+  socket.on("action", (action) => {
+    switch (action.type) {
+      case "server/hello":
+        console.log("Got hello event", action.data);
+        socket.emit("action", { type: "message", data: "Good Day!" });
+        break;
+      case "server/join":
+        console.log("Got Join event", action.data);
+        users[socket.id].username = action.data;
+        users[socket.id].avatar = createUserAvatarUrl();
+        break;
+    }
+  });
 });
 
 io.listen(3001);

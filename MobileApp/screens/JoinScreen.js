@@ -9,7 +9,10 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+
 const JoinScreen = ({ joinChat }) => {
+  const dispatch = useDispatch();
   const [username, setUsername] = React.useState("");
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
@@ -25,7 +28,10 @@ const JoinScreen = ({ joinChat }) => {
           style={{ fontSize: 30 }}
           placeholder="Enter Username"
         />
-        <Button title="Join Chat" onPress={() => joinChat(username)} />
+        <Button
+          title="Join Chat"
+          onPress={() => dispatch({ type: "server/join", data: username })}
+        />
       </View>
 
       {Platform.OS === "ios" && <KeyboardAvoidingView behavior="padding" />}
