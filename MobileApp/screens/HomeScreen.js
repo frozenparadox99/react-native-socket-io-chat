@@ -19,15 +19,22 @@ export default function HomeScreen({ navigation }) {
       <GiftedChat
         renderUsernameOnMessage
         messages={messages}
-        onSend={(messages) =>
+        onSend={(messages) => {
           dispatch({
             type: "private_message",
             data: {
               message: messages[0],
               conversationId: userId,
             },
-          })
-        }
+          });
+          dispatch({
+            type: "server/private-message",
+            data: {
+              message: messages[0],
+              conversationId: userId,
+            },
+          });
+        }}
         user={{
           _id: selfUser.userId,
         }}
