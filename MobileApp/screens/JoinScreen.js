@@ -11,7 +11,7 @@ import {
 
 import { useDispatch } from "react-redux";
 
-const JoinScreen = ({ joinChat }) => {
+const JoinScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [username, setUsername] = React.useState("");
   return (
@@ -30,11 +30,14 @@ const JoinScreen = ({ joinChat }) => {
         />
         <Button
           title="Join Chat"
-          onPress={() => dispatch({ type: "server/join", data: username })}
+          onPress={() => {
+            dispatch({ type: "server/join", data: username });
+            navigation.navigate("App");
+          }}
         />
       </View>
 
-      {Platform.OS === "ios" && <KeyboardAvoidingView behavior="padding" />}
+      <KeyboardAvoidingView behavior="padding" />
     </View>
   );
 };
