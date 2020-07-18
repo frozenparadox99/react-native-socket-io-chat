@@ -3,10 +3,13 @@ import React, { useEffect, useState, useRef } from "react";
 import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
 
+import JoinScreen from "./JoinScreen";
+
 import io from "socket.io-client";
 
 export default function HomeScreen() {
   const [recvMessages, setRecvMessages] = useState([]);
+  const [hasJoined, setHasJoined] = useState(false);
   const socket = useRef(null);
 
   useEffect(function () {
@@ -24,15 +27,25 @@ export default function HomeScreen() {
     // setMessageToSend("");
   };
 
+  const joinChat = (username) => {
+    socket.current.emit("join", username);
+    setHasJoined(true);
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <GiftedChat
-        messages={recvMessages}
-        onSend={(messages) => onSend(messages)}
-        user={{
-          _id: 1,
-        }}
-      />
+      {hasJoined ? (
+        <GiftedChat
+          messages={recvMessages}
+          onSend={(messages) => onSend(messages)}
+          user={{
+            _id: 1,
+          }}
+        />
+      ) : (
+        <JoinScreen joinChat={joinChat} />
+      )}
+
       {Platform.OS === "android" && <KeyboardAvoidingView behavior="padding" />}
     </View>
   );
